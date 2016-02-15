@@ -16,7 +16,7 @@ class pythonAPI:
 
     def __init__(self, master):
         self.master = master
-        master.title(" RHEV PYTHON API ")
+        master.title("PYTHON API ")
 
         self.label = Label(master, text="This Will be the Window Requesting user/password info.")
         self.label.pack()
