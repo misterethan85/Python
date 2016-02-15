@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+
+
+##################################
+# Program Name: Kerberpy        #
+# Version: 1.0.0                 #
+# Author: Ethan Hicks            #
+# Published: ---------           #
+################################## 
+
+import json
+from tkinter import Tk, Label, Button
+
+
+class pythonAPI:
+
+    def __init__(self, master):
+        self.master = master
+        master.title(" RHEV PYTHON API ")
+
+        self.label = Label(master, text="This Will be the Window Requesting user/password info.")
+        self.label.pack()
+
+        self.login_info = Button(master, text="LOGIN", command=self.get_user_info)
+        self.login_info.pack()
+
+        self.close_button = Button(master, text="Close", command=master.quit)
+        self.close_button.pack()
+
+
+    def get_user_info(self):
+        print("GET USER INFO")
+
+
+        username = make_entry(parent, "User name:", 16, show='*')
+        password = make_entry(parent, "Password:", 16, show="*")
+
+
+        getpass.getuser()
+        getpass.getpass(prompt='password', stream=None)
+
+    def kerberos_ticket():
+    	""" Get  UI INFO, Generate Kerberos Ticket """
+
+
+
+class KerberosTicket:
+
+    def __init__(self, service):
+        __, krb_context = kerberos.authGSSClientInit(service)
+        kerberos.authGSSClientStep(krb_context, "")
+        self._krb_context = krb_context
+        self.auth_header = ("Negotiate " +
+                            kerberos.authGSSClientResponse(krb_context))
+
+    def verify_response(self, auth_header):
+        # Handle comma-separated lists of authentication fields
+        
+        for field in auth_header.split(","):
+            kind, __, details = field.strip().partition(" ")
+            if kind.lower() == "negotiate":
+                auth_details = details.strip()
+                break
+        
+        else:
+            raise ValueError("Negotiate not found in %s" % auth_header)
+        # Finish the Kerberos handshake
+        krb_context = self._krb_context
+        
+        if krb_context is None:
+            raise RuntimeError("Ticket already used for verification")
+        self._krb_context = None
+        
+        kerberos.authGSSClientStep(krb_context, auth_details)
+        kerberos.authGSSClientClean(krb_context)
+
+
+
+
+root = Tk()
+my_gui = pythonAPI(root)
+root.mainloop()
