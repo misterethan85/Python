@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+
+##################################
+# Program Name: Advsiory-Parse   #
+# Version: 2.3.0                 #
+# Author: Ethan Hicks            #
+# Published: 2/11/2016           #
+################################## 
+
+
+
+import collections
+import csv
+import os
+
+_file = 'Advisory.txt'
+
+search1 = 'First Issued'
+search2 = 'CVEID'
+search3 = 'Fileset'
+
+CVES=[]
+bad_packages=[]
+Released=[]
+fixes=[]
+master=[]
+
+with open( _file, 'r') as advisory:
+    data = advisory.readlines()
+    #print(data)
+    #print("Lines Read: {}".format(len(data)))
+
+    for line in data:
+
+        if search1 in line:
+            date1 = line.split(':')
+            date1 = date1[1]
+            date1 = date1.strip()
+            Released.append(date1)
+            master.append(date1)
+            master.append('\n')
+            #print(date1)
+
+        elif search2 in line:
+            CVE = line.strip().split(':')
+            CVE = CVE[1]
+            CVE = CVE.strip()
+            CVES.append(CVE)
+            master.append(CVE)
+            master.append('\n')
+            #print(CVE)
+
+        elif search3 in line:
+            #print(line)
+            i = data.index(line)
+            i = i + 2
+            bad = data[i]
+            bad = bad.lstrip('|')
+            bad = bad.lstrip().split(" ")
+            bad = bad[0]
+
+            bad_packages.append(bad)
+            master.append(bad)
+            master.append('\n')
+            #print(bad[0])
+            break
+
+    for line in data:
+        line = line.lstrip()
+        line = line.lstrip('|')
+        #print(line)
+        if line.startswith(bad_packages[0]):
+            #print(line)
+            line = line.strip()
+            versions = line.rstrip('key_w_fs')
+            fixes.append(versions)
+            master.append(versions)
+            master.append('\n')
+            #print(versions)
+
+######### STILL NEED CHECK FOR APARS #############
+
+advisory.close()
+
+
+with open('Patch_Tracking_Master.txt','a') as Master:
+
+    Master.write('######################################\n')
+
+    for i in master:
+        Master.write(i)
+    Master.write('\n')
+
+Master.close()
+
+
+#print(Released)
+#print(CVES)
+#print(bad_packages)
+#print(fixes)
+#print(master)
